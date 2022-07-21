@@ -203,10 +203,14 @@ function extractEmails(str) {
  *             '└──────────┘\n'
  *
  */
-// function getRectangleString(width, height) {
-//   const dashStr = '─'.repeat(width - 2);
-//   return `┌${dashStr}┐\n` + `│${' '.repeat(width - 2)}│\n`.repeat(height - 2) + `└${dashStr}┘\n`;
-// }
+function getRectangleString(width, height) {
+  const dashStr = '─'.repeat(width - 2);
+  const a1 = `┌${dashStr}┐\n`;
+  const a2 = `│${' '.repeat(width - 2)}│\n`.repeat(height - 2);
+  const a3 = `└${dashStr}┘\n`;
+  const main = `${a1}${a2}${a3}`;
+  return main;
+}
 
 
 /**
@@ -294,7 +298,7 @@ module.exports = {
   unbracketTag,
   convertToUpperCase,
   extractEmails,
-  // getRectangleString,
+  getRectangleString,
   encodeToRot13,
   isString,
   getCardId,
