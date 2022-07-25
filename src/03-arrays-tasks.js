@@ -103,10 +103,7 @@ function getArrayOfStrings(arr) {
  *    [ false, 0, NaN, '', undefined ]   => [ ]
  */
 function removeFalsyValues(arr) {
-  return arr.filter(elem => {
-    if (elem)
-        return elem;
-  });
+  return arr.filter(Boolean);
 }
 
 /**
@@ -136,7 +133,7 @@ function getUpperCaseStrings(arr) {
  *    [ 'angular', 'react', 'ember' ] => [ 7, 5, 5 ]
  */
 function getStringsLength(arr) {
-  arr.map((el) => el.length);
+  return arr.map((el) => el.length);
 }
 
 /**
@@ -205,8 +202,7 @@ function getTail(arr, n) {
  *    +'30,31,32,33,34'
  */
 function toCsvText(arr) {
-  const array = arr.map((elem) => `${elem.join(',')} + \n`);
-  return array.join('');
+  return arr.map((value) => value.join(',')).join('\n');
 }
 
 /**
@@ -240,9 +236,12 @@ function toArrayOfSquares(arr) {
  *   [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ] => [ 1, 3, 6, 10, 15, 21, 28, 36, 45, 55 ]
  */
 function getMovingSum(arr) {
-  return arr.map((val, index, array) => val + array[index - 1]);
+  let i = 0;
+  return arr.map((val) => {
+    i = val + i;
+    return i;
+  });
 }
-
 /**
  * Returns every second item from the specified array:
  *
@@ -255,7 +254,7 @@ function getMovingSum(arr) {
  * [ "a" ] => []
  */
 function getSecondItems(arr) {
-  return arr.filter((_, index) => index % 2 === 0);
+  return arr.filter((_, index) => index % 2 === 1);
 }
 
 
@@ -274,9 +273,8 @@ function getSecondItems(arr) {
  *  [ 1,2,3,4,5 ] => [ 1, 2,2, 3,3,3, 4,4,4,4, 5,5,5,5,5 ]
  */
 function propagateItemsByPositionIndex(arr) {
-  return arr.map((el, index) => el.repeat(index + 1));
+  return arr.reduce((prev, curr, index) => prev.concat((new Array(index + 1)).fill(curr)), []);
 }
-
 
 /**
  * Returns the 3 largest numbers from the specified array
@@ -292,8 +290,11 @@ function propagateItemsByPositionIndex(arr) {
  *   [ 10, 10, 10, 10 ] => [ 10, 10, 10 ]
  */
 function get3TopItems(arr) {
-  const res = arr.reverse();
-  return res;
+  const res = arr.sort((a, b) => b - a);
+  if (arr.length < 4) {
+    return res;
+  }
+  return res.slice(0, 3);
 }
 
 
@@ -311,7 +312,7 @@ function get3TopItems(arr) {
  *   [ 1, '2' ] => 1
  */
 function getPositivesCount(arr) {
-  return arr.filter((el) => el > 0).length;
+  return arr.filter((el) => el > 0 && typeof el === 'number').length;
 }
 
 /**
@@ -329,7 +330,7 @@ function getPositivesCount(arr) {
  */
 function sortDigitNamesByNumericOrder(arr) {
   const sortArr = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
-  arr.sort((a, b) => sortArr.indexOf(a) - sortArr.indexOf(b));
+  return arr.sort((a, b) => sortArr.indexOf(a) - sortArr.indexOf(b));
 }
 /**
  * Returns the sum of all items in the specified array of numbers
@@ -423,11 +424,16 @@ function toStringList(arr) {
  *      { country: 'Russia',  city: 'Saint Petersburg' }
  *    ]
  */
-// function sortCitiesArray(arr) {
-//   // for (let i = 0; i < arr.length; i = +1) {
-//   //   arr[i].country;
-//   // }
-// }
+function sortCitiesArray(arr) {
+  return arr.sort((a, b) => {
+    if (a.country > b.country) return 1;
+    if (b.country > a.country) return -1;
+    if (a.country === b.country) {
+      if (a.city < b.city) return -1;
+    }
+    return 0;
+  });
+}
 
 /**
  * Creates an identity matrix of the specified size
@@ -447,8 +453,16 @@ function toStringList(arr) {
  *           [0,0,0,1,0],
  *           [0,0,0,0,1]]
  */
-function getIdentityMatrix(/* n */) {
-  throw new Error('Not implemented');
+function getIdentityMatrix(n) {
+  const arr = Array(n).fill(0);
+  const res = Array(n).fill(arr);
+  let i = 0;
+  return res.map((item) => {
+    const values = [...item];
+    values[i] = 1;
+    i += 1;
+    return values;
+  });
 }
 
 /**
@@ -464,9 +478,15 @@ function getIdentityMatrix(/* n */) {
  *     0, 100 => [ 0, 1, 2, ..., 100 ]
  *     3, 3   => [ 3 ]
  */
-function getIntervalArray(/* start, end */) {
-  throw new Error('Not implemented');
+function getIntervalArray(start, end) {
+  const res = Array(end - start + 1).fill(start);
+  let a = -1;
+  return res.map((el) => {
+    a += 1;
+    return el + a;
+  });
 }
+
 
 /**
  * Returns array containing only unique values from the specified array.
@@ -479,8 +499,8 @@ function getIntervalArray(/* start, end */) {
  *   [ 'a', 'a', 'a', 'a' ]  => [ 'a' ]
  *   [ 1, 1, 2, 2, 3, 3, 4, 4] => [ 1, 2, 3, 4]
  */
-function distinct(/* arr */) {
-  throw new Error('Not implemented');
+function distinct(arr) {
+  return Array.from(new Set(arr));
 }
 
 /**
@@ -600,7 +620,7 @@ module.exports = {
   getItemsSum,
   getFalsyValuesCount,
   findAllOccurrences,
-  // sortCitiesArray,
+  sortCitiesArray,
   getIdentityMatrix,
   getIntervalArray,
   distinct,
